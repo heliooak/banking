@@ -6,4 +6,6 @@ import com.bank.model.entities.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
+	boolean existsByEmail(String email);
+	
 }
