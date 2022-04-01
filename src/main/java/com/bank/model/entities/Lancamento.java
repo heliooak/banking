@@ -13,7 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
@@ -22,10 +22,9 @@ import com.bank.model.enums.StatusLancamento;
 import com.bank.model.enums.TipoLancamento;
 
 @Entity
-@Table(name= "lancamento")
+@Table(name = "lancamento", schema = "financas")
 public class Lancamento {
-	
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -40,7 +39,7 @@ public class Lancamento {
 	@Column(name = "ano")
 	private Integer ano;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 	
@@ -55,16 +54,18 @@ public class Lancamento {
 	@Enumerated(value = EnumType.STRING)
 	private TipoLancamento tipo;
 	
-	@Column(name = "situacao")
+	@Column(name = "status")
 	@Enumerated(value = EnumType.STRING)
-	private StatusLancamento situacao;
+	private StatusLancamento status;
+
 	
 	public Lancamento() {
 		super();
+		
 	}
-
+	
 	public Lancamento(Long id, String descricao, Integer mes, Integer ano, Usuario usuario, BigDecimal valor,
-			LocalDate dataCadastro, TipoLancamento tipo, StatusLancamento situacao) {
+			LocalDate dataCadastro, TipoLancamento tipo, StatusLancamento status) {
 		super();
 		this.id = id;
 		this.descricao = descricao;
@@ -74,7 +75,7 @@ public class Lancamento {
 		this.valor = valor;
 		this.dataCadastro = dataCadastro;
 		this.tipo = tipo;
-		this.situacao = situacao;
+		this.status = status;
 	}
 
 	public Long getId() {
@@ -141,17 +142,17 @@ public class Lancamento {
 		this.tipo = tipo;
 	}
 
-	public StatusLancamento getSituacao() {
-		return situacao;
+	public StatusLancamento getStatus() {
+		return status;
 	}
 
-	public void setSituacao(StatusLancamento situacao) {
-		this.situacao = situacao;
+	public void setStatus(StatusLancamento status) {
+		this.status = status;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(ano, dataCadastro, descricao, id, mes, situacao, tipo, usuario, valor);
+		return Objects.hash(ano, dataCadastro, descricao, id, mes, status, tipo, usuario, valor);
 	}
 
 	@Override
@@ -165,15 +166,16 @@ public class Lancamento {
 		Lancamento other = (Lancamento) obj;
 		return Objects.equals(ano, other.ano) && Objects.equals(dataCadastro, other.dataCadastro)
 				&& Objects.equals(descricao, other.descricao) && Objects.equals(id, other.id)
-				&& Objects.equals(mes, other.mes) && situacao == other.situacao && tipo == other.tipo
+				&& Objects.equals(mes, other.mes) && status == other.status && tipo == other.tipo
 				&& Objects.equals(usuario, other.usuario) && Objects.equals(valor, other.valor);
 	}
 
 	@Override
 	public String toString() {
 		return "Lancamento [id=" + id + ", descricao=" + descricao + ", mes=" + mes + ", ano=" + ano + ", usuario="
-				+ usuario + ", valor=" + valor + ", dataCadastro=" + dataCadastro + ", tipo=" + tipo + ", situacao="
-				+ situacao + "]";
+				+ usuario + ", valor=" + valor + ", dataCadastro=" + dataCadastro + ", tipo=" + tipo + ", status="
+				+ status + "]";
 	}
 	
+
 }

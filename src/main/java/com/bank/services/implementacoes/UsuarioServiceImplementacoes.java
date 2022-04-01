@@ -1,10 +1,15 @@
 package com.bank.services.implementacoes;
 
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.bank.model.entities.Usuario;
 import com.bank.model.repositories.UsuarioRepository;
 import com.bank.services.UsuarioService;
+import com.bank.services.exceptions.ErroAutenticacao;
 import com.bank.services.exceptions.RegraNegocioException;
 
 @Service
@@ -20,13 +25,24 @@ public class UsuarioServiceImplementacoes implements UsuarioService{
 	@Override
 	public Usuario autenticar(String email, String senha) {
 		
-		return null;
+		Optional<Usuario> usuario = repository.findByEmail(email);
+		
+		if(!usuario.isPresent()) {
+			throw new ErroAutenticacao("Usuário não encontrado para o email informado.");
+		}
+		
+		if(!usuario.get().getSenha().equals(senha)) {
+			throw new ErroAutenticacao("Senha inválida.");
+		}
+		
+		return usuario.get();
 	}
 
 	@Override
+	@Transactional
 	public Usuario salvarUsuario(Usuario usuario) {
-		
-		return null;
+		validarEmail(usuario.getEmail());
+		return repository.save(usuario);
 	}
 
 	@Override

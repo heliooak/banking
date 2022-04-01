@@ -1,4 +1,4 @@
-package com.bank.model.entities;
+ package com.bank.model.entities;
 
 import java.util.Objects;
 
@@ -9,11 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name="usuario")
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Entity
+@Table(name = "usuario")
 public class Usuario {
-	
+
 	@Id
 	@Column(name = "id")
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -21,15 +22,20 @@ public class Usuario {
 	
 	@Column(name = "nome")
 	private String nome;
-
-	@Column(name = "email")	
+	
+	
+	@Column(name = "email")
 	private String email;
 	
 	@Column(name = "senha")
+	@JsonIgnore
 	private String senha;
 	
+
 	public Usuario() {
+		
 		super();
+
 	}
 
 	public Usuario(Long id, String nome, String email, String senha) {
@@ -94,5 +100,6 @@ public class Usuario {
 	public String toString() {
 		return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + "]";
 	}
+
 	
 }
