@@ -22,7 +22,7 @@ import com.bank.model.enums.StatusLancamento;
 import com.bank.model.enums.TipoLancamento;
 
 @Entity
-@Table(name = "lancamento", schema = "financas")
+@Table(name = "lancamento")
 public class Lancamento {
 
 	@Id

@@ -3,11 +3,11 @@ package com.bank.services;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -22,15 +22,51 @@ import com.bank.services.implementacoes.UsuarioServiceImplementacoes;
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
 
-	UsuarioService service;
+	@SpyBean
+	UsuarioServiceImplementacoes service;
 	
 	@MockBean
 	UsuarioRepository repository;
 	
-	@Before
-	public void setUp() {
-		service = new UsuarioServiceImplementacoes(repository);
+	@Test(expected = Test.None.class)
+	public void deveSalvarUmUsuario() {
+		// cenário
+		Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
+		Usuario usuario = new Usuario();
+		usuario.setId(1l);
+		usuario.setNome("nome");
+		usuario.setEmail("email@email.com");
+		usuario.setSenha("senha");
+		
+		Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
+		
+		//ação
+		Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
+		
+		//verificação
+		Assertions.assertThat(usuarioSalvo).isNotNull();
+		Assertions.assertThat(usuarioSalvo.getId()).isEqualTo(1l);
+		Assertions.assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
+		Assertions.assertThat(usuarioSalvo.getEmail()).isEqualTo("email@email.com");
+		Assertions.assertThat(usuarioSalvo.getSenha()).isEqualTo("senha");
 	}
+	
+	@Test(expected = RegraNegocioException.class)
+	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado() {
+		//cenario
+		String email = "email@email.com";
+		Usuario usuario = new Usuario();
+		usuario.setEmail(email);
+		Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(email);;
+		
+		//acao
+		service.salvarUsuario(usuario);
+		
+		//verificacao
+		Mockito.verify(repository, Mockito.never()).save(usuario);
+	}
+	
+	
 	
 	@Test(expected = Test.None.class)
 	public void deveAutenticarUmUsuarioComSucesso() {
