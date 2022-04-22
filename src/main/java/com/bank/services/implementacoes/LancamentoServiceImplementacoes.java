@@ -3,6 +3,7 @@ package com.bank.services.implementacoes;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bank.model.entities.Lancamento;
 import com.bank.model.enums.StatusLancamento;
+import com.bank.model.enums.TipoLancamento;
 import com.bank.model.repositories.LancamentoRepository;
 import com.bank.services.LancamentoService;
 import com.bank.services.exceptions.RegraNegocioException;
@@ -92,6 +94,29 @@ public class LancamentoServiceImplementacoes implements LancamentoService {
 			throw new RegraNegocioException("Informe um tipo de Lançamento.");
 		}
 		
+	}
+
+	@Override
+	public Optional<Lancamento> obterPorId(Long id) {
+		return repository.findById(id);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public BigDecimal obterSaldoPorUsuario(Long id) {
+		
+		BigDecimal receitas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.RECEITA.name());
+		BigDecimal despesas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.DESPESA.name());
+		
+		if(receitas == null) {
+			receitas = BigDecimal.ZERO;
+		}
+		
+		if(despesas == null) {
+			despesas = BigDecimal.ZERO;
+		}
+		
+		return receitas.subtract(despesas);
 	}
 	
 
