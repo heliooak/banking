@@ -28,9 +28,14 @@ public class UsuarioResource {
 	private UsuarioService service;
 	private LancamentoService lancamentoService;
 	
+	public UsuarioResource() {
+		super();
+	}
+	
 	public UsuarioResource(UsuarioService service) {
 		this.service = service;
 	}
+	
 	
 	@PostMapping("/autenticar")
 	public ResponseEntity autenticar(@RequestBody UsuarioDTO dto) {

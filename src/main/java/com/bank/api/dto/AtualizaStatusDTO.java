@@ -2,10 +2,9 @@ package com.bank.api.dto;
 
 
 public class AtualizaStatusDTO {
+	
 	private String status;
 
-	
-	
 	public String getStatus() {
 		return status;
 	}

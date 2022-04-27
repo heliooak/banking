@@ -3,6 +3,7 @@ package com.bank.api.resources;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +30,7 @@ import com.bank.services.exceptions.RegraNegocioException;
 @RequestMapping("/api/lancamentos")
 public class LancamentoResource {
 	
+	@Autowired
 	private LancamentoService service;
 	private UsuarioService usuarioService;
 
@@ -86,7 +88,7 @@ public class LancamentoResource {
 	}
 	
 	@PutMapping("{id}/atualiza-status")
-	public ResponseEntity atualizarStatus( @PathVariable Long id, @RequestBody AtualizaStatusDTO dto ) {
+	public ResponseEntity atualizarStatus( @PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto ) {
 		
 		return service.obterPorId(id).map( entity -> {
 			StatusLancamento statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
@@ -133,7 +135,7 @@ public class LancamentoResource {
 		}
 		
 		if(dto.getStatus() != null) {
-		lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+			lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
 		}
 		
 		return lancamento;
