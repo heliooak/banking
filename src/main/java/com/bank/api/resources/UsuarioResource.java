@@ -24,23 +24,21 @@ import com.bank.services.exceptions.RegraNegocioException;
 @RequestMapping("/api/usuarios")
 public class UsuarioResource {
 
-	@Autowired
-	private UsuarioService service;
+	private UsuarioService usuarioService;
 	private LancamentoService lancamentoService;
 	
-	public UsuarioResource() {
-		super();
-	}
 	
-	public UsuarioResource(UsuarioService service) {
-		this.service = service;
+	@Autowired
+	public UsuarioResource(LancamentoService lancamentoService, UsuarioService usuarioService) {
+		this.lancamentoService = lancamentoService;
+		this.usuarioService = usuarioService;
 	}
 	
 	
 	@PostMapping("/autenticar")
 	public ResponseEntity autenticar(@RequestBody UsuarioDTO dto) {
 		try {
-			Usuario usuarioAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
+			Usuario usuarioAutenticado = usuarioService.autenticar(dto.getEmail(), dto.getSenha());
 			return ResponseEntity.ok(usuarioAutenticado);
 		}catch (ErroAutenticacao e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -56,7 +54,7 @@ public class UsuarioResource {
 		usuario.setSenha(dto.getSenha());
 		
 		try {
-			Usuario usuarioSalvo = service.salvarUsuario(usuario);
+			Usuario usuarioSalvo = usuarioService.salvarUsuario(usuario);
 			return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED );
 		}catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -66,7 +64,7 @@ public class UsuarioResource {
 	
 	@GetMapping("{id}/saldo")
 	public ResponseEntity obterSaldo(@PathVariable("id") Long id) {
-		Optional<Usuario> usuario = service.obterPorId(id);
+		Optional<Usuario> usuario = usuarioService.obterPorId(id);
 		
 		if(!usuario.isPresent()) {
 			return new ResponseEntity( HttpStatus.NOT_FOUND );
